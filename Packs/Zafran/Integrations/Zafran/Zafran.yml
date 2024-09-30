@@ -33,23 +33,140 @@ script:
   dockerimage: demisto/python3:3.11.9.107902
   isfetch: false
   commands:
+  - name: zafran-downloadexportcsv
+    description: Download export CSV
+    arguments:
+    - name: exportID
+      description: Unique identifier of the export operation.
+      required: true
+      isArray: false
+  - name: zafran-exportallvulnerabilities
+    description: Export all vulnerabilities
+    arguments:
+    - name: exportrequest_format
+      description: The format of the export file (json, csv, json.gz, csv.gz).
+      required: false
+      isArray: false
+      auto: PREDEFINED
+      predefined:
+      - json
+      - json.gz
+      - csv.gz
+  - name: zafran-getapresignedurlforscannerscript
+    description: Get a Presigned URL for Scanner Script
+    arguments:
+    - name: os
+      description: The operating system for which the scanner script is built.
+      required: false
+      isArray: false
+      auto: PREDEFINED
+      predefined:
+      - linux
+      - windows
+    - name: version
+      description: The scanner version. Can be omitted.
+      required: false
+      isArray: false
+    outputs:
+    - type: String
+      contextPath: Zafran.scannerURL
+      description: ''
+  - name: zafran-getexportprogress
+    description: Get export progress
+    arguments:
+    - name: exportID
+      description: Unique identifier of the export operation.
+      required: true
+      isArray: false
+    outputs:
+    - type: String
+      contextPath: Zafran.ExportOperationStatusDTO.message
+      description: ''
+    - type: String
+      contextPath: Zafran.ExportOperationStatusDTO.status
+      description: ''
+  - name: zafran-import-control
+    description: Import a control
+    arguments:
+    - name: importcontrolrequest_externalid
+      description: The external identifier for the control.
+      required: false
+      isArray: false
+    - name: importcontrolrequest_instanceid
+      description: An optional instance unique identifier to link the control to.
+      required: false
+      isArray: false
+    - name: importcontrolrequest_product
+      description: The product for which the control is being imported.
+      required: true
+      isArray: false
+    - name: importcontrolrequest_serializedfeatures
+      description: Optional serialized control features. This should be a product-specific JSON string.
+      required: false
+      isArray: false
+    - name: importcontrolrequest_serializedparams
+      description: The serialized  meters for the control. This should be a JSON string representing the control  meters.
+      required: true
+      isArray: false
+    - name: importcontrolrequest_type
+      description: The type of control being imported.
+      required: true
+      isArray: false
+    outputs:
+    - type: String
+      contextPath: Zafran.ImportControlResponse.control_id
+      description: The unique identifier for the imported control.
+  - name: zafran-import-instance
+    description: Import an instance
+    arguments:
+    - name: importinstancerequest_id
+      description: The unique identifier for the instance.
+      required: true
+      isArray: false
+    - name: importinstancerequest_name
+      description: The display name for the instance.
+      required: true
+      isArray: false
+    - name: importinstancerequest_os
+      description: ''
+      required: true
+      isArray: false
+    - name: importinstancerequest_serializedparams
+      description: The serialized  meters for the instance. This should be a JSON string representing the instance  meters.
+      required: true
+      isArray: false
+    - name: importinstancerequest_tenantcontext_environment
+      description: importinstancerequest_tenantcontext environment
+      required: false
+      isArray: false
+    outputs:
+    - type: String
+      contextPath: Zafran.ImportInstanceResponse.instance_id
+      description: The unique identifier for the imported instance.
+  - name: zafran-investigateavulnerability
+    description: Investigate a vulnerability
+    arguments:
+    - name: findingID
+      description: Unique identifier of the vulnerability.
+      required: true
+      isArray: false
   - name: zafran-mitigation-performed
     description: Update on mitigations performed
     arguments:
     - name: mitigationstatus_external_ticket_id
-      description: 'External service ticket ID.'
+      description: ''
       required: false
       isArray: false
     - name: mitigationstatus_external_ticket_url
-      description: 'External service ticket link.'
+      description: ''
       required: false
       isArray: false
     - name: mitigationstatus_id
-      description: 'Mitigation ID.'
+      description: ''
       required: false
       isArray: false
     - name: mitigationstatus_state
-      description: 'Mitigation status     new - New mitigation     pending_approval - Waiting for mitigation approval     rejected - Mitigative action was rejected.     in_progress - Mitigation approved and in progress.     completed - Mitigation applied successfully.'
+      description: 'Mitigation status     new - New mitigation     pending_approval - Waiting for mitigation approval     rejected - Mitigative action was rejected.     in_progress - Mitigation approved and in progress.     completed - Mitigation applied successfully. '
       required: false
       isArray: false
       auto: PREDEFINED
@@ -62,10 +179,10 @@ script:
     outputs:
     - type: Number
       contextPath: Zafran.MitigationsPerformedResponse.internal_status_code
-      description: 'Internal status code.'
+      description: ''
     - type: String
       contextPath: Zafran.MitigationsPerformedResponse.message
-      description: 'Error message.'
+      description: ''
   - name: zafran-mitigations-export
     description: Export recommended mitigations
     arguments:
@@ -76,47 +193,47 @@ script:
     outputs:
     - type: Number
       contextPath: Zafran.UpstreamMitigation.assets_count
-      description: 'Assets count.'
+      description: ''
     - type: String
       contextPath: Zafran.UpstreamMitigation.control_product
-      description: 'Control Product.'
+      description: ''
     - type: Number
       contextPath: Zafran.UpstreamMitigation.exposure
-      description: 'Exposure in days.'
+      description: Exposure in days
     - type: String
       contextPath: Zafran.UpstreamMitigation.id
-      description: 'Zafran mitigation unique id.'
+      description: Zafran mitigation unique id
     - type: String
       contextPath: Zafran.UpstreamMitigation.mitigation_type
-      description: 'Mitigation type.'
+      description: ''
     - type: String
       contextPath: Zafran.UpstreamMitigation.recommendation
-      description: 'Recommendation.'
+      description: ''
     - type: String
       contextPath: Zafran.UpstreamMitigation.title
-      description: 'Title.'
+      description: ''
     - type: Number
       contextPath: Zafran.UpstreamMitigation.vulnerabilities_count
-      description: 'Vulnerabilities count.'
+      description: ''
     - type: Number
       contextPath: Zafran.UpstreamMitigation.internal_status_code
-      description: 'Internal status code.'
+      description: ''
     - type: String
       contextPath: Zafran.UpstreamMitigation.message
-      description: 'Error message'
+      description: ''
   - name: zafran-mitigations-performed
     description: Update on mitigations performed
     arguments:
     - name: mitigationsstatus_mitigation_id
-      description: 'Mitigation ID.'
+      description: ''
       required: false
       isArray: false
     - name: mitigationsstatus_mitigation_ids
-      description: 'Mitigation IDs.'
+      description: ''
       required: false
       isArray: true
     - name: mitigationsstatus_state
-      description: 'Mitigation status     new - New mitigation     pending_approval - Waiting for mitigation approval     rejected - Mitigative action was rejected.     in_progress - Mitigation approved and in progress.     completed - Mitigation applied successfully.'
+      description: 'Mitigation status     new - New mitigation     pending_approval - Waiting for mitigation approval     rejected - Mitigative action was rejected.     in_progress - Mitigation approved and in progress.     completed - Mitigation applied successfully. '
       required: false
       isArray: false
       auto: PREDEFINED
@@ -129,8 +246,78 @@ script:
     outputs:
     - type: Number
       contextPath: Zafran.MitigationsPerformedResponse.internal_status_code
-      description: 'Internal status code.'
+      description: ''
     - type: String
       contextPath: Zafran.MitigationsPerformedResponse.message
-      description: 'Error message.'
+      description: ''
+  - name: zafran-queryvulnerabilities
+    description: Query vulnerabilities
+    arguments:
+    - name: offset
+      description: Pagination offset.
+      required: false
+      isArray: false
+    - name: count
+      description: Number of vulnerability per request.
+      required: false
+      isArray: false
+    - name: query
+      description: ZQL filter to apply.
+      required: false
+      isArray: false
+    outputs:
+    - type: String
+      contextPath: Zafran.ClientFindingDTO.CveId
+      description: ''
+    - type: String
+      contextPath: Zafran.ClientFindingDTO.FindingID
+      description: ''
+    - type: Boolean
+      contextPath: Zafran.ClientFindingDTO.IsNetworkReachable
+      description: ''
+    - type: Boolean
+      contextPath: Zafran.ClientFindingDTO.IsPublicThreat
+      description: ''
+    - type: Boolean
+      contextPath: Zafran.ClientFindingDTO.IsRuntime
+      description: ''
+  - name: zafran-upload-scan
+    description: Preview - Upload a scan
+    arguments:
+    - name: scanuploadrequestjson_instancecontext_id
+      description: scanuploadrequestjson_instancecontext id
+      required: true
+      isArray: false
+    - name: scanuploadrequestjson_instancecontext_os
+      description: scanuploadrequestjson_instancecontext os
+      required: true
+      isArray: false
+    - name: scanuploadrequestjson_scancontext_deferred
+      description: scanuploadrequestjson_scancontext deferred
+      required: true
+      isArray: false
+    - name: scanuploadrequestjson_scancontext_logs
+      description: scanuploadrequestjson_scancontext logs
+      required: false
+      isArray: false
+    - name: scanuploadrequestjson_scancontext_scanResult
+      description: scanuploadrequestjson_scancontext scanResult
+      required: false
+      isArray: false
+    - name: scanuploadrequestjson_scancontext_scanStatus
+      description: scanuploadrequestjson_scancontext scanStatus
+      required: false
+      isArray: false
+    - name: scanuploadrequestjson_scancontext_scannerType
+      description: scanuploadrequestjson_scancontext scannerType
+      required: true
+      isArray: false
+    - name: scanuploadrequestjson_tenantcontext_environment
+      description: scanuploadrequestjson_tenantcontext environment
+      required: false
+      isArray: false
+    outputs:
+    - type: String
+      contextPath: Zafran.ScanUploadResponse.presignedURL
+      description: For deferred scan uploads - The presigned URL for uploading the scan result.
 fromversion: 6.0.0
